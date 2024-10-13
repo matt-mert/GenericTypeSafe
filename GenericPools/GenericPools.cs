@@ -9,12 +9,12 @@ namespace MattMert.GenericPools
         void OnGet();
         void OnRelease();
     }
-    
+
     public class GenericPool<T> where T : Component, IPoolObject
     {
         private const int defaultCapacity = 10;
         private const int defaultMaxSize = 1000;
-        
+
         private ObjectPool<T> _pool;
         private Transform _root;
         private T _prefab;
@@ -24,10 +24,10 @@ namespace MattMert.GenericPools
         {
             if (!prefab)
                 throw new ArgumentNullException(nameof(prefab));
-            
+
             if (capacity == -1) capacity = defaultCapacity;
             if (maxSize == -1) maxSize = defaultMaxSize;
-            
+
             _prefab = prefab;
             _root = root ? new GameObject($"Pool_{prefab.name}").transform : root;
             _pool = new ObjectPool<T>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy,
@@ -50,9 +50,9 @@ namespace MattMert.GenericPools
         }
 
         public int GetActiveCount() => _pool.CountActive;
-        
+
         public int GetInactiveCount() => _pool.CountInactive;
-        
+
         public int GetCountAll() => _pool.CountAll;
 
         public T Get()
@@ -67,7 +67,7 @@ namespace MattMert.GenericPools
             obj.OnRelease();
             _pool.Release(obj);
         }
-        
+
         public void Fill(int amount)
         {
             for (var i = 0; i < amount; i++)

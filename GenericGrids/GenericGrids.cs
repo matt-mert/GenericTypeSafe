@@ -23,7 +23,7 @@ namespace MattMert.GenericGrids
         y,
         z
     }
-    
+
     /// <summary>
     /// Base interface for objects to be placed int the grid units
     /// </summary>
@@ -162,18 +162,18 @@ namespace MattMert.GenericGrids
                 [GridAxis.y] = new(),
                 [GridAxis.z] = new()
             };
-            
+
             GenerateVolume(width, height, depth);
         }
 
         IGridUnit IGridVolume.this[int i, int j, int k] => _units[(i, j, k)];
-        
+
         IGridUnit IGridVolume.this[(int, int, int) coords] => _units[(coords.Item1, coords.Item2, coords.Item3)];
-        
+
         public GridUnit<T> this[int i, int j, int k] => _units[(i, j, k)];
-        
+
         public GridUnit<T> this[(int, int, int) coords] => _units[(coords.Item1, coords.Item2, coords.Item3)];
-        
+
         public IEnumerator<IGridUnit> GetEnumerator() => _units.Values.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -183,11 +183,11 @@ namespace MattMert.GenericGrids
         public GridSurface<T> GetSurface(GridAxis normal, int index) => _surfaces[normal][index];
 
         IGridUnit IGridVolume.GetUnit(int i, int j, int k) => _units[(i, j, k)];
-        
+
         IGridUnit IGridVolume.GetUnit((int, int, int) coords) => _units[coords];
 
         public GridUnit<T> GetUnit(int i, int j, int k) => _units[(i, j, k)];
-        
+
         public GridUnit<T> GetUnit((int, int, int) coords) => _units[coords];
 
         IGridUnit[] IGridVolume.GetUnits()
@@ -252,7 +252,7 @@ namespace MattMert.GenericGrids
                 _units[(i, j, k)].CreateUnit(getter);
             }
         }
-        
+
         public void RemoveVolume()
         {
             for (var i = Width - 1; i >= 0; i--) RemoveSurface(GridAxis.x, i);
@@ -264,7 +264,7 @@ namespace MattMert.GenericGrids
             for (var i = Height - 1; i >= height; i--) RemoveSurface(GridAxis.y, i);
             for (var i = Depth - 1; i >= depth; i--) RemoveSurface(GridAxis.z, i);
         }
-        
+
         public void TrimVolume((int, int, int) from, (int, int, int) to)
         {
             for (var i = to.Item1 - 1; i >= from.Item1; i--) RemoveSurface(GridAxis.x, i);
@@ -285,7 +285,7 @@ namespace MattMert.GenericGrids
             var width = GridsUtilities.GetWidth(normal, Width, Height, Depth);
             var height = GridsUtilities.GetHeight(normal, Width, Height, Depth);
             var depth = GridsUtilities.GetDepth(normal, Width, Height, Depth);
-            
+
             AddUnits(normal, width, height, depth);
             AddLines(normal, width, height, depth);
             AddSurface(normal, width, height, depth);
@@ -296,7 +296,7 @@ namespace MattMert.GenericGrids
             var width = GridsUtilities.GetWidth(normal, Width, Height, Depth);
             var height = GridsUtilities.GetHeight(normal, Width, Height, Depth);
             var depth = GridsUtilities.GetDepth(normal, Width, Height, Depth);
-            
+
             InsertUnits(index, normal, width, height, depth);
             InsertLines(index, normal, width, height, depth);
             InsertSurface(index, normal, width, height);
@@ -307,7 +307,7 @@ namespace MattMert.GenericGrids
             var width = GridsUtilities.GetWidth(normal, Width, Height, Depth);
             var height = GridsUtilities.GetHeight(normal, Width, Height, Depth);
             var depth = GridsUtilities.GetDepth(normal, Width, Height, Depth);
-            
+
             RemoveUnits(index, normal, width, height, depth);
             RemoveLines(index, normal, width, height, depth);
             RemoveSurface(index, normal);
@@ -400,7 +400,7 @@ namespace MattMert.GenericGrids
         {
             var widthAxis = normal.ToWidthAxis();
             var heightAxis = normal.ToHeightAxis();
-            
+
             var surface = new GridSurface<T>(this, width, height, normal);
             surface._lines.Add(widthAxis, new List<GridLine<T>>(height));
             for (var i = 0; i < height; i++)
@@ -427,7 +427,7 @@ namespace MattMert.GenericGrids
         {
             var widthAxis = normal.ToWidthAxis();
             var heightAxis = normal.ToHeightAxis();
-            
+
             for (var i = 0; i < width; i++)
             {
                 var line = new GridLine<T>(this, height, heightAxis);
@@ -467,7 +467,7 @@ namespace MattMert.GenericGrids
         {
             var widthAxis = normal.ToWidthAxis();
             var heightAxis = normal.ToHeightAxis();
-            
+
             var newSurface = new GridSurface<T>(this, width, height, normal);
             newSurface._lines.Add(widthAxis, new List<GridLine<T>>(height));
             for (var i = 0; i < height; i++)
@@ -486,7 +486,7 @@ namespace MattMert.GenericGrids
                 var vector = GridsUtilities.ConvertToVector(normal, i, j, index);
                 newSurface._units.Add(vector, _units[vector]);
             }
-            
+
             _surfaces[normal].Insert(index, newSurface);
         }
 
@@ -512,7 +512,7 @@ namespace MattMert.GenericGrids
                     _lines[widthAxis][newVector] = existingLine;
                 }
             }
-            
+
             for (var i = 0; i < width; i++) for (var j = 0; j < height; j++)
             {
                 var vector = GridsUtilities.ConvertToVector(normal, i, j, 0);
@@ -559,7 +559,7 @@ namespace MattMert.GenericGrids
                     existingUnit.OnShift();
                 }
             }
-            
+
             for (var i = 0; i < width; i++) for (var j = 0; j < height; j++)
             {
                 var vector = GridsUtilities.ConvertToVector(normal, i, j, index);
@@ -578,7 +578,7 @@ namespace MattMert.GenericGrids
         {
             var widthAxis = normal.ToWidthAxis();
             var heightAxis = normal.ToHeightAxis();
-            
+
             for (var i = 0; i < width; i++)
             {
                 var lineVector = GridsUtilities.ConvertToVector(normal, i, 0, index);
@@ -598,10 +598,8 @@ namespace MattMert.GenericGrids
             }
 
             if (index + 1 >= depth)
-            {
                 return;
-            }
-            
+
             for (var i = index + 1; i < depth; i++)
             {
                 for (var j = 0; j < width; j++)
@@ -632,9 +630,7 @@ namespace MattMert.GenericGrids
             }
 
             if (index + 1 >= depth)
-            {
                 return;
-            }
 
             for (var i = index + 1; i < depth; i++)
             {
@@ -665,12 +661,12 @@ namespace MattMert.GenericGrids
         public int Width => _lines[Normal.ToHeightAxis()].Count;
         public int Height => _lines[Normal.ToWidthAxis()].Count;
         public int Count => Width * Height;
-        
+
         internal readonly Dictionary<GridAxis, List<GridLine<T>>> _lines;
         internal readonly Dictionary<(int, int, int), GridUnit<T>> _units;
         private readonly GridVolume<T> _volume;
         private Func<T> _getter;
-        
+
         public GridSurface(int width, int height, GridAxis normal)
         {
             Normal = normal;
@@ -696,11 +692,11 @@ namespace MattMert.GenericGrids
         }
 
         IGridUnit IGridSurface.this[int i, int j] => _lines[Normal.ToHeightAxis()][i]._units[j];
-        
+
         IGridUnit IGridSurface.this[(int, int) coords] => _lines[Normal.ToHeightAxis()][coords.Item1]._units[coords.Item2];
 
         public GridUnit<T> this[int i, int j] => _lines[Normal.ToHeightAxis()][i]._units[j];
-        
+
         public GridUnit<T> this[(int, int) coords] => _lines[Normal.ToHeightAxis()][coords.Item1]._units[coords.Item2];
 
         public IEnumerator<IGridUnit> GetEnumerator() => _units.Values.GetEnumerator();
@@ -712,13 +708,13 @@ namespace MattMert.GenericGrids
         public GridLine<T> GetLine(GridAxis axis, int index) => _lines[axis][index];
 
         IGridUnit IGridSurface.GetUnit(int i, int j) => _lines[Normal.ToHeightAxis()][i]._units[j];
-        
+
         IGridUnit IGridSurface.GetUnit((int, int) coords) => _lines[Normal.ToHeightAxis()][coords.Item1]._units[coords.Item2];
 
         public GridUnit<T> GetUnit(int i, int j) => _lines[Normal.ToHeightAxis()][i]._units[j];
-        
+
         public GridUnit<T> GetUnit((int, int) coords) => _lines[Normal.ToHeightAxis()][coords.Item1]._units[coords.Item2];
-        
+
         IGridUnit[] IGridSurface.GetUnits()
         {
             var result = new IGridUnit[Count];
@@ -809,12 +805,12 @@ namespace MattMert.GenericGrids
                 _lines[Normal.ToHeightAxis()][i]._units[j].DisposeUnit();
             }
         }
-        
+
         public void AddLine(GridAxis axis)
         {
             var length = GridsUtilities.GetLength(axis, Normal, Width, Height);
             var other = GridsUtilities.GetOther(axis, Normal, Width, Height);
-            
+
             AddUnits(axis, length, other);
             AddLine(axis, length, other);
         }
@@ -823,7 +819,7 @@ namespace MattMert.GenericGrids
         {
             var length = GridsUtilities.GetLength(axis, Normal, Width, Height);
             var other = GridsUtilities.GetOther(axis, Normal, Width, Height);
-            
+
             InsertUnits(index, axis, length, other);
             InsertLine(index, axis, length);
         }
@@ -832,7 +828,7 @@ namespace MattMert.GenericGrids
         {
             var length = GridsUtilities.GetLength(axis, Normal, Width, Height);
             var other = GridsUtilities.GetOther(axis, Normal, Width, Height);
-            
+
             RemoveUnits(index, axis, length, other);
             RemoveLine(index, axis, length);
         }
@@ -847,7 +843,7 @@ namespace MattMert.GenericGrids
         {
             var widthAxis = Normal.ToWidthAxis();
             var heightAxis = Normal.ToHeightAxis();
-            
+
             for (var i = 0; i < width; i++) for (var j = 0; j < height; j++)
             {
                 if (i == 0)
@@ -916,14 +912,13 @@ namespace MattMert.GenericGrids
                 var otherLine = _lines[otherAxis][i];
                 otherLine._units.Insert(index, _units[vector]);
             }
-            
             var newLine = new GridLine<T>(this, length, axis);
             for (var i = 0; i < length; i++)
             {
                 var vector = GridsUtilities.ConvertToVector(axis, Normal, i, index);
                 newLine._units.Add(_units[vector]);
             }
-            
+
             _lines[axis].Insert(index, newLine);
         }
 
@@ -960,7 +955,7 @@ namespace MattMert.GenericGrids
                 var otherLine = _lines[otherAxis][i];
                 otherLine._units.RemoveAt(index);
             }
-            
+
             _lines[axis].RemoveAt(index);
         }
 
@@ -975,9 +970,7 @@ namespace MattMert.GenericGrids
             }
 
             if (index + 1 >= other)
-            {
                 return;
-            }
 
             for (var i = index + 1; i < other; i++)
             {
@@ -1009,12 +1002,12 @@ namespace MattMert.GenericGrids
         public int Dimension { get; }
         public int Count => _units.Count;
         public int Length => _units.Count;
-        
+
         internal readonly List<GridUnit<T>> _units;
         private readonly GridVolume<T> _volume;
         private readonly GridSurface<T> _surface;
         private Func<T> _getter;
-        
+
         public GridLine(int length, GridAxis axis)
         {
             Axis = axis;
@@ -1022,7 +1015,7 @@ namespace MattMert.GenericGrids
             _volume = null;
             _surface = null;
             _units = new List<GridUnit<T>>(length);
-            
+
             GenerateLine(length);
         }
 
@@ -1043,9 +1036,9 @@ namespace MattMert.GenericGrids
             _surface = surface;
             _units = new List<GridUnit<T>>(length);
         }
-        
+
         IGridUnit IGridLine.this[int i] => _units[i];
-        
+
         public GridUnit<T> this[int i] => _units[i];
 
         public IEnumerator<IGridUnit> GetEnumerator() => _units.GetEnumerator();
@@ -1146,7 +1139,7 @@ namespace MattMert.GenericGrids
             var unit = new GridUnit<T>(this, coords);
             unit.CreateUnit(_getter);
             _units.Insert(index, unit);
-            
+
             for (var i = index; i < Length + 1; i++)
             {
                 _units[i]._coords = Axis.ToCoords(i);
@@ -1203,7 +1196,7 @@ namespace MattMert.GenericGrids
         private Func<T> _getter;
         private bool _hasObject;
         private T _object;
-        
+
         public GridUnit()
         {
             _volume = null;
@@ -1221,7 +1214,7 @@ namespace MattMert.GenericGrids
             _coords = coords;
             Dimension = 3;
         }
-        
+
         internal GridUnit(GridSurface<T> surface, (int, int, int) coords)
         {
             _volume = null;
@@ -1291,7 +1284,7 @@ namespace MattMert.GenericGrids
         {
             if (_hasObject) _object.OnShift();
         }
-        
+
         private void SetField(object obj)
         {
             if (GridsUtilities.TryFindBackingField(obj, "GridUnit", out var field))
@@ -1300,13 +1293,12 @@ namespace MattMert.GenericGrids
             }
         }
     }
-    
+
     public static partial class GridsUtilities
     {
         internal static bool TryFindBackingField(object obj, string propertyName, out FieldInfo fieldInfo)
         {
             const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-            
             var backingField = $"<{propertyName}>k__BackingField";
             var type = obj.GetType();
             var found = false;
@@ -1327,7 +1319,7 @@ namespace MattMert.GenericGrids
 
             return found;
         }
-        
+
         internal static int GetWidth(GridAxis normal, int x, int y, int z)
         {
             return normal switch
@@ -1424,7 +1416,7 @@ namespace MattMert.GenericGrids
                 _ => default
             };
         }
-        
+
         public static (int, int, int) ToCoords(this GridAxis axis)
         {
             return axis switch

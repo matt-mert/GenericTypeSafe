@@ -3,31 +3,110 @@ using MattMert.Common;
 
 namespace MattMert.GenericSignals
 {
+    public class Signals : ATypeSafeMain<SignalHub>
+    {
+        public static void PauseSignals(object id)
+        {
+            hub.PauseSignals(id);
+        }
+
+        public static void ResumeSignals(object id)
+        {
+            hub.ResumeSignals(id);
+        }
+
+        public static void PauseAllSignals()
+        {
+            hub.PauseAllSignals();
+        }
+
+        public static void ResumeAllSignals()
+        {
+            hub.ResumeAllSignals();
+        }
+    }
+
+    public class SignalHub : ATypeSafeHub
+    {
+        public void PauseSignals(object id)
+        {
+            foreach (var typeSafe in objs.Values)
+            {
+                if (typeSafe is not ABaseSignal signal)
+                    continue;
+
+                if (signal.SignalId == id)
+                    signal.PauseSignal();
+            }
+        }
+
+        public void ResumeSignals(object id)
+        {
+            foreach (var typeSafe in objs.Values)
+            {
+                if (typeSafe is not ABaseSignal signal)
+                    continue;
+
+                if (signal.SignalId == id)
+                    signal.ResumeSignal();
+            }
+        }
+
+        public void PauseAllSignals()
+        {
+            foreach (var typeSafe in objs.Values)
+            {
+                if (typeSafe is not ABaseSignal signal)
+                    continue;
+
+                signal.PauseSignal();
+            }
+        }
+
+        public void ResumeAllSignals()
+        {
+            foreach (var typeSafe in objs.Values)
+            {
+                if (typeSafe is not ABaseSignal signal)
+                    continue;
+
+                signal.ResumeSignal();
+            }
+        }
+    }
+
     public abstract class ABaseSignal : ATypeSafe
     {
         protected abstract ISignal signal { get; }
-        
-        public void PauseAll()
+        public bool IsPaused => signal.IsPaused;
+        public object SignalId => signal.SignalId;
+
+        public void SetId(object id)
         {
-            signal.PauseAll();
+            signal.SetId(id);
         }
 
-        public void ResumeAll()
+        public void PauseSignal()
         {
-            signal.ResumeAll();
+            signal.PauseSignal();
         }
 
-        public void Pause(object id)
+        public void ResumeSignal()
         {
-            signal.Pause(id);
+            signal.ResumeSignal();
         }
 
-        public void Resume(object id)
+        public void PauseListener(object id)
         {
-            signal.Resume(id);
+            signal.PauseListener(id);
+        }
+
+        public void ResumeListener(object id)
+        {
+            signal.ResumeListener(id);
         }
     }
-    
+
     public abstract class ASignal : ABaseSignal
     {
         protected override ISignal signal => _signal;
@@ -85,7 +164,7 @@ namespace MattMert.GenericSignals
         {
             _signal.RemoveListener(listener);
         }
-        
+
         public void RemoveAllListeners()
         {
             _signal.RemoveAllListeners();
@@ -112,7 +191,7 @@ namespace MattMert.GenericSignals
             _signal.RemoveAllListeners();
             _signal = null;
         }
-        
+
         public void AddListener(Action<T, U> listener, int order = 0, object id = null)
         {
             _signal.AddListener(listener, order, id);
@@ -149,7 +228,7 @@ namespace MattMert.GenericSignals
             _signal.RemoveAllListeners();
             _signal = null;
         }
-        
+
         public void AddListener(Action<T, U, V> listener, int order = 0, object id = null)
         {
             _signal.AddListener(listener, order, id);
@@ -186,7 +265,7 @@ namespace MattMert.GenericSignals
             _signal.RemoveAllListeners();
             _signal = null;
         }
-        
+
         public void AddListener(Action<T, U, V, Y> listener, int order = 0, object id = null)
         {
             _signal.AddListener(listener, order, id);
@@ -212,7 +291,7 @@ namespace MattMert.GenericSignals
             _signal.Dispatch(id, arg1, arg2, arg3, arg4);
         }
     }
-    
+
     public abstract class ASignal<T, U, V, Y, Z> : ABaseSignal
     {
         protected override ISignal signal => _signal;
@@ -223,7 +302,7 @@ namespace MattMert.GenericSignals
             _signal.RemoveAllListeners();
             _signal = null;
         }
-        
+
         public void AddListener(Action<T, U, V, Y, Z> listener, int order = 0, object id = null)
         {
             _signal.AddListener(listener, order, id);

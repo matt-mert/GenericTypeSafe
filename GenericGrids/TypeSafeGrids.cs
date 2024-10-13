@@ -3,6 +3,14 @@ using MattMert.Common;
 
 namespace MattMert.GenericGrids
 {
+    public class Grids : ATypeSafeMain<GridHub>
+    {
+    }
+
+    public class GridHub : ATypeSafeHub
+    {
+    }
+
     public abstract class AVolume<T> : ATypeSafe where T : class, IGridObject
     {
         private GridVolume<T> _volume;
@@ -17,7 +25,7 @@ namespace MattMert.GenericGrids
             _volume.DisposeUnits();
             _volume = null;
         }
-        
+
         public int GetWidth() => _volume.Width;
         public int GetHeight() => _volume.Height;
         public int GetDepth() => _volume.Depth;
@@ -45,7 +53,7 @@ namespace MattMert.GenericGrids
         {
             _surface = new GridSurface<T>(width, height, normal);
         }
-        
+
         public override void Destroy()
         {
             _surface.DisposeUnits();
@@ -79,13 +87,13 @@ namespace MattMert.GenericGrids
         {
             _line = new GridLine<T>(length, axis);
         }
-        
+
         public override void Destroy()
         {
             _line.DisposeUnits();
             _line = null;
         }
-        
+
         public GridAxis GetAxis() => _line.Axis;
         public int GetLength() => _line.Length;
         public GridUnit<T> GetUnit(int index) => _line.GetUnit(index);

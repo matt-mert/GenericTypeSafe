@@ -8,85 +8,84 @@ namespace MattMert.Common
         string Hash { get; }
         void Destroy();
     }
-    
-    public static class TypeSafe
+
+    public abstract class ATypeSafeMain<THub> where THub : ATypeSafeHub, new()
     {
-        private static readonly TypeSafeHub _hub = new();
+        protected static readonly THub hub = new();
 
         public static T Get<T>() where T : ITypeSafe, new()
         {
-            return _hub.Get<T>();
+            return hub.Get<T>();
         }
 
         public static void Destroy<T>() where T : ITypeSafe, new()
         {
-            _hub.Destroy<T>();
+            hub.Destroy<T>();
         }
 
-        public static void DestroyObjectByHash(string hash)
+        public static void DestroyByHash(string hash)
         {
-            _hub.DestroyObjectByHash(hash);
+            hub.DestroyByHash(hash);
         }
 
-        public static void DestroyAllObjects()
+        public static void DestroyAll()
         {
-            _hub.DestroyAllObjects();
+            hub.DestroyAll();
         }
     }
 
-    public class TypeSafeHub
+    public abstract class ATypeSafeHub
     {
-        private readonly Dictionary<Type, ITypeSafe> _objs = new();
-        
+        protected readonly Dictionary<Type, ITypeSafe> objs = new();
+
         public T Get<T>() where T : ITypeSafe, new()
         {
             var type = typeof(T);
-            
-            if (_objs.TryGetValue(type, out var obj))
+            if (objs.TryGetValue(type, out var obj))
             {
                 return (T)obj;
             }
-            
+
             return (T)Bind(type);
         }
 
         public void Destroy<T>() where T : ITypeSafe, new()
         {
             var type = typeof(T);
-            if (!_objs.TryGetValue(type, out var obj))
+            if (!objs.TryGetValue(type, out var obj))
                 return;
-            
+
             obj.Destroy();
-            _objs.Remove(type);
+            objs.Remove(type);
         }
 
-        public void DestroyObjectByHash(string hash)
+        public void DestroyByHash(string hash)
         {
             var obj = GetObjectByHash(hash);
             obj?.Destroy();
         }
 
-        public void DestroyAllObjects()
+        public void DestroyAll()
         {
-            foreach (var obj in _objs.Values)
+            foreach (var obj in objs.Values)
             {
                 obj.Destroy();
             }
-            
-            _objs.Clear();
+
+            objs.Clear();
         }
-        
+
         private ITypeSafe Bind(Type type)
         {
-            if (_objs.TryGetValue(type, out var obj)) return default;
+            if (objs.TryGetValue(type, out var obj)) return obj;
             obj = (ITypeSafe)Activator.CreateInstance(type);
-            _objs.Add(type, obj);
+            objs.Add(type, obj);
             return obj;
         }
 
         private ITypeSafe GetObjectByHash(string hash)
         {
-            foreach (var obj in _objs.Values)
+            foreach (var obj in objs.Values)
             {
                 if (obj.Hash == hash)
                 {
@@ -114,7 +113,7 @@ namespace MattMert.Common
                 return _hash;
             }
         }
-        
+
         public abstract void Destroy();
     }
 }

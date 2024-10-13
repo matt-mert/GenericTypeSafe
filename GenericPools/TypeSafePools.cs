@@ -1,15 +1,22 @@
 using System;
 using MattMert.Common;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace MattMert.GenericPools
 {
+    public class Pools : ATypeSafeMain<PoolHub>
+    {
+    }
+
+    public class PoolHub : ATypeSafeHub
+    {
+    }
+
     public abstract class APool<T> : ATypeSafe where T : Component, IPoolObject
     {
         private const int DefaultCapacity = 10;
         private const int DefaultMaxSize = 1000;
-        
+
         private GenericPool<T> _pool;
         private Transform _root;
         private T _prefab;
@@ -29,9 +36,9 @@ namespace MattMert.GenericPools
                 Debug.LogError($"Pool of type {typeof(T).Name} is already initialized!");
                 return;
             }
-            
+
             if (!prefab)
-                throw new System.ArgumentNullException(nameof(prefab));
+                throw new ArgumentNullException(nameof(prefab));
 
             if (capacity == -1) capacity = DefaultCapacity;
             if (maxSize == -1) maxSize = DefaultMaxSize;
@@ -82,18 +89,19 @@ namespace MattMert.GenericPools
             if (!CheckIfInitialized()) return null;
             return _pool.Get();
         }
-        
+
         public void Release(T obj)
         {
             if (!CheckIfInitialized()) return;
             _pool.Release(obj);
         }
-        
+
         public void Fill(int amount)
         {
             if (!CheckIfInitialized()) return;
             _pool.Fill(amount);
         }
+
         public void Clear()
         {
             if (!CheckIfInitialized()) return;
@@ -110,17 +118,17 @@ namespace MattMert.GenericPools
         {
             if (!_initialized)
                 Debug.LogError($"Pool of type {typeof(T).Name} is not initialized yet!");
-            
+
             return _initialized;
         }
 
         protected virtual T CreateFunc()
         {
-            var obj = Object.Instantiate(_prefab, _root);
+            var obj = UnityEngine.Object.Instantiate(_prefab, _root);
             obj.gameObject.SetActive(false);
             return obj;
         }
-        
+
         protected virtual void ActionOnGet(T obj)
         {
             obj.gameObject.SetActive(true);
@@ -134,7 +142,7 @@ namespace MattMert.GenericPools
 
         protected virtual void ActionOnDestroy(T obj)
         {
-            Object.Destroy(obj.gameObject);
+            UnityEngine.Object.Destroy(obj.gameObject);
         }
     }
 }

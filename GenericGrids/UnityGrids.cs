@@ -9,12 +9,11 @@ namespace MattMert.GenericGrids
         public abstract void OnDispose();
         public abstract void OnShift();
     }
-    
+
     public static partial class GridsUtilities
     {
-        
     }
-    
+
     public static partial class GridsExtensions
     {
         public static Vector3Int ToVector3Int(this GridAxis axis)
@@ -27,7 +26,7 @@ namespace MattMert.GenericGrids
                 _ => default
             };
         }
-        
+
         public static Vector3Int ToVector3Int(this GridAxis axis, int i)
         {
             return axis switch
@@ -38,7 +37,7 @@ namespace MattMert.GenericGrids
                 _ => default
             };
         }
-        
+
         public static Vector3 ToVector3(this GridAxis axis)
         {
             return axis switch
@@ -49,7 +48,7 @@ namespace MattMert.GenericGrids
                 _ => default
             };
         }
-        
+
         public static Vector3 ToVector3(this GridAxis axis, int i)
         {
             return axis switch
@@ -105,7 +104,7 @@ namespace MattMert.GenericGrids
         {
             return volume.GetUnit(coords.x, coords.y, coords.z);
         }
-        
+
         public static IGridUnit GetUnit(this IGridVolume volume, Vector3 coords)
         {
             return volume.GetUnit((int)coords.x, (int)coords.y, (int)coords.z);
